@@ -3,15 +3,15 @@ import Form from "../form/index";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { StyledContainer } from "./Styles";
+import Validate from "../validation/Validation";
 const CreateProfile = () => {
-  const [employeeData, setEmployeeData] = useState([]);
+    const [errors, setErrors] = useState({ type: "", msg: "", status: false });
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState();
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  console.log(employeeData);
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
@@ -29,61 +29,88 @@ const CreateProfile = () => {
   };
 
   const handleCreate = () => {
-    const user = { name, userName, address, email, phone };
-    axios
-      .post("https://jsonplaceholder.typicode.com/users", { user })
-      .then((res) => {
-        console.log(res.data, res.status);
-        alert("created successfully");
-        navigate("/")
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("something went wrong");
-      });
+    const result = Validate(name, userName, address, email, phone);
+    if (!result?.status) {
+      console.log(result, "result");
+      setErrors(result);
+
+      
+    } else {
+      const add = { name, userName, address, email, phone };
+      axios
+        .post("https://dummyjson.com/products/add", { add })
+        .then((res) => {
+          console.log(res.data, res.status);
+          alert("created successfully");
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("something went wrong");
+        });
+    }
   };
 
-  useEffect(() => {
-    axios.get(`https://jsonplaceholder.typicode.com/users`).then((res) => {
-      console.log(res, "res");
-      const persons = res.data;
-      setEmployeeData({ persons });
-    });
-  }, []);
   return (
-    <StyledContainer  style={{marginTop:"20vh" ,backgroundColor:"orange"}}>
+    <StyledContainer>
       <Form
         className="input"
         type="text"
-       
         placeholder="Enter name"
         onChange={(e) => handleNameChange(e)}
       />
+      {!errors.status && errors.type === "name" && (
+        <p className="p" style={{ color: "red" }}>
+          {errors.msg}
+        </p>
+      )}
       <Form
         className="input"
         type="text"
         placeholder="Enter User Name"
         onChange={(e) => handleUserNameChange(e)}
       />
+      {!errors.status && errors.type === "username" && (
+        <p className="p" style={{ color: "red" }}>
+          {errors.msg}
+        </p>
+      )}
       <Form
         className="input"
         type="text"
         placeholder="Enter address"
         onChange={(e) => handleAddressChange(e)}
       />
+      {!errors.status && errors.type === "address" && (
+        <p className="p" style={{ color: "red" }}>
+          {errors.msg}
+        </p>
+      )}
       <Form
         className="input"
         type="number"
         placeholder="Enter phone no"
         onChange={(e) => handlePhoneChange(e)}
       />
+      {!errors.status && errors.type === "phone" && (
+        <p className="p" style={{ color: "red" }}>
+          {errors.msg}
+        </p>
+      )}
       <Form
         className="input"
         type="text"
         placeholder="Enter Email"
         onChange={(e) => handleEmailChange(e)}
       />
-      <button className="form-button" onClick={handleCreate}>Create</button>
+      {!errors.status && errors.type === "email" && (
+        <p className="p" style={{ color: "red" }}>
+          {errors.msg}
+        </p>
+      )}
+      <button className="form-button" onClick={handleCreate}>
+        Create
+      </button>
     </StyledContainer>
   );
 };
