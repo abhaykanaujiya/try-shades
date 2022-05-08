@@ -9,7 +9,7 @@ const CreateProfile = () => {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState();
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const handleNameChange = (e) => {
@@ -31,16 +31,16 @@ const CreateProfile = () => {
   const handleCreate = () => {
     const result = Validate(name, userName, address, email, phone);
     if (!result?.status) {
-      console.log(result, "result");
+    
       setErrors(result);
 
       
     } else {
       const add = { name, userName, address, email, phone };
       axios
-        .post("https://dummyjson.com/products/add", { add })
+        .post("https://dummyjson.com/products/add", { id:add})
         .then((res) => {
-          console.log(res.data, res.status);
+  
           alert("created successfully");
           navigate("/");
         })
@@ -88,11 +88,11 @@ const CreateProfile = () => {
       )}
       <Form
         className="input"
-        type="number"
+        type="text"
         placeholder="Enter phone no"
         onChange={(e) => handlePhoneChange(e)}
       />
-      {!errors.status && errors.type === "phone" && (
+      {!errors.status && errors.type === "number" && (
         <p className="p" style={{ color: "red" }}>
           {errors.msg}
         </p>

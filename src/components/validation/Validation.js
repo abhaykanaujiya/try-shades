@@ -6,6 +6,7 @@ const Validate = (
   phone,
 ) => {
   const regex = /.+\@.+\..+/;
+   const pattern = /^\d{10}$/;
   if (name === "") {
     return {
       type: "name",
@@ -25,7 +26,7 @@ const Validate = (
       msg: "address is missing",
       status: false,
     };
-  } else if (phone !== Number) {
+  } else if (pattern.test(phone) === false) {
     return {
       type: "number",
       msg: "number is invalid",
@@ -34,7 +35,7 @@ const Validate = (
   } else if (regex.test(email) === false) {
     return {
       type: "email",
-      msg: "email number is invalid",
+      msg: "email is invalid",
       status: false,
     };
   } else {
